@@ -14,7 +14,6 @@ const baseURL = `https://api.github.com/`;
 // UserCard
 
 const axiosFn = async (baseURL, url) => {
-  console.log(`${baseURL}${url}`);
   try {
     const res = await axios.get(`${baseURL}${url}`);
     return res.data;
@@ -36,8 +35,8 @@ const UserCard = ({
 }) => (
   <section>
     <figure>
-      <img src={avatar_url} alt={`profile avatar of Github User ${name}`} />
-      <h2>{name}</h2>
+      <img src={avatar_url} alt={`profile avatar of Github User ${login}`} />
+      {name && <h2>{name}</h2>}
       <figcaption>{login}</figcaption>
     </figure>
   </section>
@@ -66,14 +65,17 @@ class App extends Component {
 
   render() {
     const { user, followers } = this.state;
+
     return (
       <div>
-        <header>header</header>
+        <header>
+          <h1>Github User Card</h1>
+        </header>
         <main>
           <UserCard {...user} />
           <ul>
             {followers.map(follower => (
-              <li>
+              <li key={follower.id}>
                 <UserCard {...follower} />
               </li>
             ))}
