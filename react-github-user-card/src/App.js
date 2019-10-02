@@ -34,12 +34,29 @@ const UserCard = ({
   login
 }) => (
   <section>
+    <a href={html_url}>
+      <figure>
+        <img src={avatar_url} alt={`profile avatar of Github User ${login}`} />
+        {name && <h2>{name}</h2>}
+        <figcaption>{login}</figcaption>
+      </figure>
+    </a>
+    <ul>
+      <li>{bio}</li>
+      <li>{location}</li>
+      <li>Followers: {followers}</li>
+      <li>Following: {following}</li>
+    </ul>
+  </section>
+);
+
+const FollowerCard = ({ avatar_url, login, html_url }) => (
+  <a href={html_url}>
     <figure>
       <img src={avatar_url} alt={`profile avatar of Github User ${login}`} />
-      {name && <h2>{name}</h2>}
       <figcaption>{login}</figcaption>
     </figure>
-  </section>
+  </a>
 );
 
 class App extends Component {
@@ -76,7 +93,7 @@ class App extends Component {
           <ul>
             {followers.map(follower => (
               <li key={follower.id}>
-                <UserCard {...follower} />
+                <FollowerCard {...follower} />
               </li>
             ))}
           </ul>
