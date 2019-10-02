@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import './App.css';
+import React, { Component } from "react";
+import axios from "axios";
+import "./App.css";
 
 // convert to class
 // cDM --> get first user and add to user {}
@@ -11,9 +11,14 @@ import './App.css';
 // UserCard
 
 const axiosFn = async (baseURL, url) => {
-  const res = await axios.get(`${baseURL}${url}`);
-  const { data } = res.data;
-  return data;
+  console.log(`${baseURL}${url}`);
+  try {
+    const res = await axios.get(`${baseURL}${url}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 };
 
 const d = new Date();
@@ -24,21 +29,20 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      currentUserName: 'losephjambert',
+      currentUserName: "losephjambert",
       user: {},
-      followers: [],
+      followers: []
     };
   }
 
   componentDidMount() {
     const { currentUserName } = this.state;
 
-    const user = axiosFn(baseURL, `users/${currentUserName}`);
-    const followers = axiosFn(baseURL, `users/${currentUserName}/followers`);
-
-    console.log(user);
-    Promise.all([user]).then(values => {
-      console.log('data', values);
+    axiosFn(baseURL, `users/${currentUserName}`).then(res => {
+      this.setState({ user: res });
+    });
+    axiosFn(baseURL, `users/${currentUserName}/followers`).then(res => {
+      this.setState({ followers: res });
     });
   }
 
