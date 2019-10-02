@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import axios from "axios";
-import "./App.css";
-import styled from "styled-components";
+import React, { Component } from 'react';
+import axios from 'axios';
+import './App.css';
+import styled from 'styled-components';
 
 const d = new Date();
 const baseURL = `https://api.github.com/`;
@@ -31,16 +31,19 @@ const StyledUserLink = styled.a`
   display: flex;
 `;
 
-const UserCard = ({
-  avatar_url,
-  bio,
-  followers,
-  following,
-  location,
-  name,
-  html_url,
-  login
-}) => (
+const StyledLoadingContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const UserCard = ({ avatar_url, bio, followers, following, location, name, html_url, login }) => (
   <section>
     <StyledUserLink href={html_url}>
       <figure>
@@ -71,9 +74,10 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      currentUserName: "losephjambert",
+      currentUserName: 'losephjambert',
       user: {},
-      followers: []
+      followers: [],
+      isLoading: true,
     };
   }
 
@@ -88,13 +92,26 @@ class App extends Component {
     });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { followers, isLoading } = this.state;
+    if (prevState.followers !== followers) this.setState({ isLoading: !isLoading });
+  }
+
   render() {
-    const { user, followers } = this.state;
+    const { user, followers, isLoading } = this.state;
+
+    if (isLoading) {
+      return (
+        <StyledLoadingContainer>
+          <p>Loading page content, please wait.</p>
+        </StyledLoadingContainer>
+      );
+    }
 
     return (
       <div>
         <header>
-          <h1>Github User Card</h1>
+          <h1>{user.name}'s Github Profile and Followers</h1>
         </header>
         <main>
           <UserCard {...user} />
