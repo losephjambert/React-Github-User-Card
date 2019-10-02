@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import './App.css';
 
 // convert to class
@@ -9,7 +10,15 @@ import './App.css';
 // UsersList
 // UserCard
 
+const axiosFn = async (baseURL, url) => {
+  const res = await axios.get(`${baseURL}${url}`);
+  const { data } = res.data;
+  return data;
+};
+
 const d = new Date();
+
+const baseURL = `https://api.github.com/`;
 
 class App extends Component {
   constructor() {
@@ -20,6 +29,19 @@ class App extends Component {
       followers: [],
     };
   }
+
+  componentDidMount() {
+    const { currentUserName } = this.state;
+
+    const user = axiosFn(baseURL, `users/${currentUserName}`);
+    const followers = axiosFn(baseURL, `users/${currentUserName}/followers`);
+
+    console.log(user);
+    Promise.all([user]).then(values => {
+      console.log('data', values);
+    });
+  }
+
   render() {
     return (
       <div>
