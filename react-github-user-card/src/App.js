@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './App.css';
 import styled from 'styled-components';
-import { CSSTransition } from 'react-transition-group';
 
 const d = new Date();
 const baseURL = `https://api.github.com/`;
