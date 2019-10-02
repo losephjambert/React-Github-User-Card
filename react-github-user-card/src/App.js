@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './App.css';
 import styled from 'styled-components';
+import { CSSTransition } from 'react-transition-group';
 
 const d = new Date();
 const baseURL = `https://api.github.com/`;
@@ -26,25 +27,54 @@ const axiosFn = async (baseURL, url) => {
 
 const StyledUserLink = styled.a`
   color: black;
-  border: 2px solid black;
+  box-shadow: 0 0 0 3px black;
   background-color: white;
   display: flex;
+  max-width: 300px;
+  margin-bottom: 2rem;
+  padding: 20px;
+  transition: 200ms;
+  text-decoration: none;
+
+  &:hover {
+    box-shadow: 0 0 0 3px gold;
+  }
+
+  figure {
+    margin: 0;
+    padding: 0;
+  }
 `;
 
-const StyledLoadingContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  background-color: white;
+const StyledUserSection = styled.section`
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column-reverse;
+
+  ul {
+    margin-bottom: 2rem;
+  }
+`;
+
+const StyledContainer = styled.div`
+  padding: 25px;
+  margin: 25px;
+  box-shadow: inset 0 0 0 5px black;
+`;
+
+const StyledUserDetails = styled.ul``;
+
+const StyledFollowersList = styled.ul`
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+
+  li {
+    flex-basis: 200px;
+  }
 `;
 
 const UserCard = ({ avatar_url, bio, followers, following, location, name, html_url, login }) => (
-  <section>
+  <StyledUserSection>
     <StyledUserLink href={html_url}>
       <figure>
         <img src={avatar_url} alt={`profile avatar of Github User ${login}`} />
@@ -52,13 +82,16 @@ const UserCard = ({ avatar_url, bio, followers, following, location, name, html_
         <figcaption>{login}</figcaption>
       </figure>
     </StyledUserLink>
-    <ul>
+    <StyledUserDetails>
+      <li>
+        <h3>{name}'s Profile Details</h3>
+      </li>
       <li>{bio}</li>
       <li>{location}</li>
       <li>Followers: {followers}</li>
       <li>Following: {following}</li>
-    </ul>
-  </section>
+    </StyledUserDetails>
+  </StyledUserSection>
 );
 
 const FollowerCard = ({ avatar_url, login, html_url }) => (
@@ -77,7 +110,6 @@ class App extends Component {
       currentUserName: 'losephjambert',
       user: {},
       followers: [],
-      isLoading: true,
     };
   }
 
@@ -92,36 +124,28 @@ class App extends Component {
     });
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { followers, isLoading } = this.state;
-    if (prevState.followers !== followers) this.setState({ isLoading: !isLoading });
-  }
-
   render() {
-    const { user, followers, isLoading } = this.state;
-
-    if (isLoading) {
-      return (
-        <StyledLoadingContainer>
-          <p>Loading page content, please wait.</p>
-        </StyledLoadingContainer>
-      );
-    }
+    const { user, followers } = this.state;
 
     return (
       <div>
         <header>
-          <h1>{user.name}'s Github Profile and Followers</h1>
+          <h1>{user.name}'s Github Profile</h1>
         </header>
         <main>
-          <UserCard {...user} />
-          <ul>
-            {followers.map(follower => (
-              <li key={follower.id}>
-                <FollowerCard {...follower} />
-              </li>
-            ))}
-          </ul>
+          <StyledContainer>
+            <UserCard {...user} />
+            <section>
+              <h2>Followers</h2>
+              <StyledFollowersList>
+                {followers.map(follower => (
+                  <li key={follower.id}>
+                    <FollowerCard {...follower} />
+                  </li>
+                ))}
+              </StyledFollowersList>
+            </section>
+          </StyledContainer>
         </main>
         <footer>
           <p>&copy; {d.getFullYear()} Joseph Lambert</p>
