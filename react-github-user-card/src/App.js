@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
+import styled from "styled-components";
 
 const d = new Date();
 const baseURL = `https://api.github.com/`;
@@ -23,6 +24,13 @@ const axiosFn = async (baseURL, url) => {
   }
 };
 
+const StyledUserLink = styled.a`
+  color: black;
+  border: 2px solid black;
+  background-color: white;
+  display: flex;
+`;
+
 const UserCard = ({
   avatar_url,
   bio,
@@ -34,13 +42,13 @@ const UserCard = ({
   login
 }) => (
   <section>
-    <a href={html_url}>
+    <StyledUserLink href={html_url}>
       <figure>
         <img src={avatar_url} alt={`profile avatar of Github User ${login}`} />
         {name && <h2>{name}</h2>}
         <figcaption>{login}</figcaption>
       </figure>
-    </a>
+    </StyledUserLink>
     <ul>
       <li>{bio}</li>
       <li>{location}</li>
@@ -51,12 +59,12 @@ const UserCard = ({
 );
 
 const FollowerCard = ({ avatar_url, login, html_url }) => (
-  <a href={html_url}>
+  <StyledUserLink href={html_url}>
     <figure>
       <img src={avatar_url} alt={`profile avatar of Github User ${login}`} />
       <figcaption>{login}</figcaption>
     </figure>
-  </a>
+  </StyledUserLink>
 );
 
 class App extends Component {
